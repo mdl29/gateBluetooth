@@ -38,9 +38,11 @@ void setup() {
     //Setup IDS
     Serial.begin(spd);
     idsInitialize(&i);
+    //clearIds(&i); // Uncomment on first use to set up EEPROM
     if(!loadIds(&i))
         clearIds(&i);
-    //bth.begin(spd);
+
+    bth.begin(spd);
     pinMode(gatePin, OUTPUT);
 }
 
@@ -62,17 +64,20 @@ void openGate(){
 
 void readBuff() {
     for (int i = 0; i < BUFF_SIZE; i++) {
-        //while(!bth.available());
-        while(!Serial.available());
-        //buf[i] = bth.read();
-        buf[i] = Serial.read();
+        while(true){
+            //Allow bluetooth and Serial connections
+            if(bth.available())
+                buf[i] = bth.read();
+            else if(Serial.available())
+                buf[i] = Serial.read();
 
-        if(buf[i] == EOC){
-            buf[i] = '\0';
-            Serial.print("Command received: ");
-            Serial.print(buf);
-            Serial.print("\n");
-            return;
+            if(buf[i] == EOC){
+                buf[i] = '\0';
+                Serial.print("Command received: ");
+                Serial.print(buf);
+                Serial.print("\n");
+                return;
+            }
         }
     }
 }
@@ -189,7 +194,7 @@ void treatData()
                 Serial.print("ID: ");
                 readFrom(sizeof(i.length) + j*sizeof(*i.ids), &d, sizeof(d));
                 Serial.print(d);
-            Serial.print("\n");
+                Serial.print("\n");
             }
             break;
 
