@@ -1,5 +1,8 @@
 # gateBluetooth
 
+To setup the EEPROM of the Arduino, execute `./gate/init/gen_init.sh` and upload sketch on Arduino board.
+Run sketch once and upload gate.ino
+
 ##Usage:
 
 '<id><command>.': play command <command> authentifacted with id <id>
