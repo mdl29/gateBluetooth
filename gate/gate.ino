@@ -13,8 +13,8 @@ const uint16_t rootIds[] = {2,9};
 const int BUFF_SIZE = 50;
 const char EOC = '.';
 
-const int RX = 10;
-const int TX = 11;
+const int TX = 10;
+const int RX = 11;
 const int spd = 9600;
 const int gatePin = 9;
 
@@ -22,7 +22,7 @@ char buf[BUFF_SIZE];
 
 ids i;
 
-//SoftwareSerial bth(RX, TX);
+SoftwareSerial bth(RX, TX);
 
 //TODO: EEPROM
 bool writeTo(void* dest, void* src, size_t length){
@@ -38,7 +38,6 @@ void setup() {
     //Setup IDS
     Serial.begin(spd);
     idsInitialize(&i);
-    //clearIds(&i); // Uncomment on first use to set up EEPROM
     if(!loadIds(&i))
         clearIds(&i);
 
@@ -64,20 +63,20 @@ void openGate(){
 
 void readBuff() {
     for (int i = 0; i < BUFF_SIZE; i++) {
+        //Allow bluetooth and Serial connections
         while(true){
-            //Allow bluetooth and Serial connections
             if(bth.available())
                 buf[i] = bth.read();
             else if(Serial.available())
                 buf[i] = Serial.read();
-
-            if(buf[i] == EOC){
-                buf[i] = '\0';
-                Serial.print("Command received: ");
-                Serial.print(buf);
-                Serial.print("\n");
-                return;
-            }
+            else continue;
+            break;
+        }
+        if(buf[i] == EOC){
+            buf[i] = '\0';
+            Serial.print("Command received: ");
+            Serial.println(buf);
+            return;
         }
     }
 }
@@ -92,9 +91,8 @@ void treatData()
     id = atoi(b);
 
     if(!identificate(id, &i)){
-        Serial.print("Failed to authentificate with ID");
-        Serial.print(id);
-        Serial.print("\n");
+        Serial.print("Failed to authentificate with ID ");
+        Serial.println(id);
         return; //if id don't exist
     }
 
@@ -107,8 +105,7 @@ void treatData()
         case 'a':
             if (!root){
                 Serial.print("Failed to authentificate as root with ID ");
-                Serial.print(id);
-                Serial.print("\n");
+                Serial.println(id);
                 return; //if id don't exist
             }
             b++;
@@ -116,19 +113,18 @@ void treatData()
             if(addId(c, &i)){
                 Serial.print("ID ");
                 Serial.print(c);
-                Serial.print(" added\n");
+                Serial.println(" added");
             }
             else {
                 Serial.print("ID ");
                 Serial.print(c);
-                Serial.print(" NOT added\n");
+                Serial.println(" NOT added");
             }
             break;
         case 'r':
             if (!root){
                 Serial.print("Failed to authentificate as root with ID ");
-                Serial.print(id);
-                Serial.print("\n");
+                Serial.println(id);
                 return; //if id don't exist
             }
             b++;
@@ -136,71 +132,66 @@ void treatData()
             if(rmId(c ,&i)){
                 Serial.print("ID " );
                 Serial.print(c);
-                Serial.print(" removed\n");
+                Serial.println(" removed");
             }
             else {
                 Serial.print("ID ");
                 Serial.print(c);
-                Serial.print(" NOT removed\n");
+                Serial.println(" NOT removed");
             }
             break;
         case 'c':
             if (!root){
                 Serial.print("Failed to authentificate as root with ID ");
-                Serial.print(id);
-                Serial.print("\n");
+                Serial.println(id);
                 return; //if id don't exist
             }
             if(clearIds(&i)){
-                Serial.print("IDs cleared\n");
+                Serial.println("IDs cleared");
             }
             else {
-                Serial.print("IDs not cleared\n");
+                Serial.println("IDs not cleared");
             }
             break;
         case 'd':
             if (!root){
                 Serial.print("Failed to authentificate as root with ID ");
-                Serial.print(id);
-                Serial.print("\n");
+                Serial.println(id);
                 return; //if id don't exist
             }
             for (uint16_t j = 0; j < i.length; ++j) {
                 Serial.print("ID: ");
                 Serial.print(i.ids[j]);
                 Serial.print(" - root: ");
-                Serial.print(isRoot(i.ids[j]) ? "true\n" : "false\n");
+                Serial.println(isRoot(i.ids[j]) ? "true" : "false");
             }
             break;
         case 'o':
             openGate();
-            Serial.print("Gate opened\n");
+            Serial.println("Gate opened");
             break;
         case 'e': //Dump EEPROM : for debug purpose only
             if (!root){
                 Serial.print("Failed to authentificate as root with ID ");
-                Serial.print(id);
-                Serial.print("\n");
+                Serial.println(id);
                 return; //if id don't exist
             }
             uint16_t d;
             Serial.print("/!\\ For debug purpose only /!\\\nDumping EEPROM\n");
             Serial.print("Length: ");
             readFrom(0, &d, sizeof(d));
-            Serial.print(d);
-            Serial.print("\n");
+            Serial.println(d);
 
             for (int j = 0; j < i.length; j++) {
                 Serial.print("ID: ");
                 readFrom(sizeof(i.length) + j*sizeof(*i.ids), &d, sizeof(d));
-                Serial.print(d);
-                Serial.print("\n");
+                Serial.println(d);
             }
             break;
 
         default:
             Serial.print("Command ");
             Serial.print(*b);
-            Serial.print(" not found\n");
+            Serial.println(" not found");
     }
 }

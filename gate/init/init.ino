@@ -5,7 +5,7 @@ extern "C" { // obligatoire sinon ça marche pô
 }
 
 const uint16_t rootLength = 2;
-const uint16_t rootIds[] = {2,9}
+const uint16_t rootIds[] = {2,9};
 
 const int spd = 9600;
 
