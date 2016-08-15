@@ -31,7 +31,7 @@ bool setID(int16_t pos, uint16_t id, bool lengthChanged, ids* i){
     }
 
 
-    if (!writeTo(sizeof(i->length) + pos*sizeof(*i->ids), //where to write
+    if (!writeTo((void *)(sizeof(i->length) + pos*sizeof(*i->ids)), //where to write
                  &id, //what to write
                  sizeof(id)) //how much du write
         )
@@ -92,13 +92,13 @@ bool identificate(uint16_t id, ids* i){
 
 bool loadIds(ids* ids){
 
-    if(!readFrom(0,
+    if(!readFrom((void*) 0,
               &ids->length,
               sizeof(ids->length))
             )
         return false;
 
-    if(!readFrom(sizeof(ids->length),
+    if(!readFrom((void*)(sizeof(ids->length)),
                 ids->ids,
                 sizeof(*ids->ids) * ids->length) //read ids * length
             )
@@ -114,7 +114,7 @@ bool saveIds(ids* ids){
             )
         return false;
 
-    if(!writeTo(sizeof(ids->length),
+    if(!writeTo((void *)(sizeof(ids->length)),
                 ids->ids,
                 sizeof(*ids->ids) * ids->length) //read ids * length
             )

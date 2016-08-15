@@ -159,7 +159,7 @@ void treatData()
                 Serial.println(id);
                 return; //if id don't exist
             }
-            for (uint16_t j = 0; j < i.length; ++j) {
+            for (int j = 0; j < i.length; ++j) {
                 Serial.print("ID: ");
                 Serial.print(i.ids[j]);
                 Serial.print(" - root: ");
@@ -184,7 +184,7 @@ void treatData()
 
             for (int j = 0; j < i.length; j++) {
                 Serial.print("ID: ");
-                readFrom(sizeof(i.length) + j*sizeof(*i.ids), &d, sizeof(d));
+                readFrom((void *)(sizeof(i.length) + j*sizeof(*i.ids)), &d, sizeof(d));
                 Serial.println(d);
             }
             break;
