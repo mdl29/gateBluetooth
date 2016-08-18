@@ -1,14 +1,13 @@
 #include <SoftwareSerial.h>
-#include <avr/eeprom.h>
-#include <stdint.h> //uint8_t
+#include <stdint.h> //uint(8,16,32,etc.)_t
 #include <stdlib.h> // atoi
 
 extern "C" { // obligatoire sinon ça marche pô
 #include "id.h"
 }
 
-const uint16_t rootLength = 2;
-const uint16_t rootIds[] = {2,9};
+#include "config.h"
+
 
 const int BUFF_SIZE = 50;
 const char EOC = '.';
@@ -23,16 +22,6 @@ char buf[BUFF_SIZE];
 ids i;
 
 SoftwareSerial bth(RX, TX);
-
-//TODO: EEPROM
-bool writeTo(void* dest, void* src, size_t length){
-    eeprom_update_block(src, dest, length);
-    return true;
-}
-bool readFrom(void* src, void* dest, size_t length){
-    eeprom_read_block (dest, src, length);
-    return true;
-}
 
 void setup() {
     //Setup IDS
