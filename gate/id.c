@@ -80,14 +80,13 @@ bool rmId(uint16_t id, ids* i){
    Delete all Id except root's id
  */
 bool clearIds(ids* i){
-    memcpy(i->ids, rootIds, sizeof(*i->ids) * rootLength); //set new ones
-    i->length = rootLength;
+    idsInitialize(i);
 
     return saveIds(i);
 }
 
 bool identificate(uint16_t id, ids* i){
-    return findPos(id,i) != -1 ? true : false ;
+    return (findPos(id,i) != -1 || isRoot(id));
 }
 
 bool loadIds(ids* ids){

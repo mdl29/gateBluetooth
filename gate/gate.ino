@@ -159,11 +159,17 @@ void treatData()
                 Serial.println(id);
                 return; //if id don't exist
             }
-            for (int j = 0; j < i.length; ++j) {
+            for (int j = 0; j < rootLength ; ++j) { // Root Ids
+                Serial.print("ID: ");
+                Serial.print(rootIds[j]);
+                Serial.print(" - root: ");
+                Serial.println("true");
+            }
+            for (int j = 0; j < i.length; ++j) { // Normal Ids
                 Serial.print("ID: ");
                 Serial.print(i.ids[j]);
                 Serial.print(" - root: ");
-                Serial.println(isRoot(i.ids[j]) ? "true" : "false");
+                Serial.println("false");
             }
             break;
         case 'o':
