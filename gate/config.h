@@ -2,7 +2,7 @@
 #define CONFIG_H
 
 #include <stdint.h>
-#include <avr/epprom.h>
+#include <avr/eeprom.h>
 
 const uint16_t rootLength = 2;
 const uint16_t rootIds[] = {2,9};
