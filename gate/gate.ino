@@ -148,18 +148,30 @@ void treatData()
                 Serial.println(id);
                 return; //if id don't exist
             }
+            
             for (int j = 0; j < rootLength ; ++j) { // Root Ids
                 Serial.print("ID: ");
                 Serial.print(rootIds[j]);
                 Serial.print(" - root: ");
                 Serial.println("true");
+                bth.write("ID: ");
+                bth.write(rootIds[j]);
+                bth.write(" - root: ");
+                bth.write("true");
+                bth.write("\n");
             }
             for (int j = 0; j < i.length; ++j) { // Normal Ids
                 Serial.print("ID: ");
                 Serial.print(i.ids[j]);
                 Serial.print(" - root: ");
                 Serial.println("false");
+                bth.write("ID: ");
+                bth.write(i.ids[j]);
+                bth.write(" - root: ");
+                bth.write("false");
+                bth.write("\n");                
             }
+            bth.write(EOC);
             break;
         case 'o':
             openGate();
