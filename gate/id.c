@@ -57,7 +57,8 @@ bool addId(uint16_t id, ids* i){
 
 // Find pos of id to delete return -1 if no ID founded
 int16_t findPos(uint16_t id, ids* i){
-    for(int16_t j = 0; j < i->length; j++) {
+    int16_t j;
+    for(j = 0; j < i->length; j++) {
         if(i->ids[j] == id)
             return j;
     }
@@ -127,7 +128,8 @@ void idsInitialize(ids* i){
 }
 
 bool isRoot(uint16_t id){
-    for (uint16_t i = 0; i < rootLength ; ++i) {
+    uint16_t i;
+    for (i = 0; i < rootLength ; ++i) {
         if(rootIds[i] == id)
             return true;
     }
